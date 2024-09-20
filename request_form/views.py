@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import SongRequest
 
 # View for rendering the request form
@@ -16,7 +16,6 @@ def request_form(request):
             user_name=user_name,
             user_message=user_message,
         )
-        return redirect('request_list')  # Redirect to the list after submission
 
     return render(request, 'request_form.html')
 
@@ -24,6 +23,12 @@ def request_form(request):
 def request_list(request):
     requests = SongRequest.objects.all()
     return render(request, 'request_list.html', {'requests': requests})
+
+def delete_request(request, request_id):
+    # Get the specific request by its ID and delete it
+    req = get_object_or_404(SongRequest, id=request_id)
+    req.delete()
+    return redirect('request_list')  # Redirect back to the request list after deletion
 
 # View for deleting all requests
 def delete_all_requests(request):
